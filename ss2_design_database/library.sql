@@ -32,11 +32,11 @@ CREATE TABLE books (
 );
 
 CREATE TABLE borrows (
+    id INT PRIMARY KEY,
     s_id INT,
     b_id INT,
     borrow_date DATE,
     return_date DATE,
-    PRIMARY KEY (s_id , b_id),
     FOREIGN KEY (s_id)
         REFERENCES students (s_id),
     FOREIGN KEY (b_id)
