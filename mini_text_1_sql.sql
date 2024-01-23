@@ -136,7 +136,30 @@ join address on address.a_id = students.a_id
 group by address.address;
 
 -- Tính điểm trung bình của các khóa học (avg)
-select course.c_name as 'Tên Khoá Học', avg(points.p_point) as 'Điểm trung bình'
-from points
-join course on course.c_id = points.c_id
-group by course.c_name;
+SELECT 
+    course.c_name AS 'Tên Khoá Học',
+    AVG(points.p_point) AS 'Điểm trung bình'
+FROM
+    points
+        JOIN
+    course ON course.c_id = points.c_id
+GROUP BY course.c_name
+ORDER BY AVG(points.p_point) DESC
+LIMIT 1;
+-- Tính điểm trung bình lớn nhất 
+SELECT 
+    course.c_name AS 'Tên Khoá Học',
+    AVG(points.p_point) AS 'Điểm Trung Bình'
+FROM
+    points
+        JOIN
+    course ON course.c_id = points.c_id
+GROUP BY course.c_name
+HAVING AVG(points.p_point) = (SELECT 
+        MAX(avg_point)
+    FROM
+        (SELECT 
+            AVG(points.p_point) AS avg_point
+        FROM
+            points
+        GROUP BY c_id) AS avg_points);
