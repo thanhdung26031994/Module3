@@ -170,10 +170,116 @@ select * from vw_CTPNHAP_VT;
 
 -- Câu 3. Tạo view có tên vw_CTPNHAP_VT_PN bao gồm các thông tin sau: số phiếu nhập hàng, ngày nhập hàng, số đơn đặt hàng, 
 -- mã vật tư, tên vật tư, số lượng nhập, đơn giá nhập, thành tiền nhập.
+create view vw_CTPNHAP_VT_PN as
+select pn.pn_ma, pn.ngay_nhap, ctdh.sl_dat, vt.vt_ma,vt.ten , ct.sl_nhap, ct.dg_nhap, (ct.sl_nhap * ct.dg_nhap) as TTN
+from chi_tiet_phieu_nhap ct
+ join vat_tu vt on vt.vt_id = ct.vt_id
+ join phieu_nhap pn on pn.pn_id = ct.pn_id
+ join chi_tiet_don_hang ctdh on ctdh.vt_id = vt.vt_id;
 
-select pn.pn_ma, pn.ngay_nhap, vt.vt_ma,vt.ten , ct.sl_nhap, ct.dg_nhap, (ct.sl_nhap * ct.dg_nhap) as TTN
+select * from vw_CTPNHAP_VT_PN;
+
+-- Câu 4. Tạo view có tên vw_CTPNHAP_VT_PN_DH bao gồm các thông tin sau: số phiếu nhập hàng, ngày nhập hàng, số đơn đặt hàng, 
+-- mã nhà cung cấp, mã vật tư, tên vật tư, số lượng nhập, đơn giá nhập, thành tiền nhập.
+create view vw_CTPNHAP_VT_PN_DH as
+select pn.pn_ma, pn.ngay_nhap, ctdh.sl_dat, ncc.ncc_ma, vt.vt_ma,vt.ten , ct.sl_nhap, ct.dg_nhap, (ct.sl_nhap * ct.dg_nhap) as TTN
 from chi_tiet_phieu_nhap ct
 left join vat_tu vt on vt.vt_id = ct.vt_id
 left join phieu_nhap pn on pn.pn_id = ct.pn_id
 left join chi_tiet_don_hang ctdh on ctdh.vt_id = vt.vt_id
-left join don_dat_hang ddh on ddh.ddh_id = ctdh.ddh_id;
+left join don_dat_hang ddh on ddh.ddh_id = ctdh.ddh_id
+left join nha_cung_cap ncc on ncc.ncc_id = ddh.ncc_id;
+
+select * from vw_CTPNHAP_VT_PN_DH;
+
+-- 5. Tạo view có tên vw_CTPNHAP_loc  bao gồm các thông tin sau: số phiếu nhập hàng, mã vật tư, số lượng nhập, đơn giá nhập, thành tiền nhập. 
+-- Và chỉ liệt kê các chi tiết nhập có số lượng nhập > 50.
+create view vw_CTPNHAP_loc as
+select pn.pn_ma, vt.vt_ma, ct.sl_nhap, ct.dg_nhap, (ct.sl_nhap * ct.dg_nhap) as TTN
+from chi_tiet_phieu_nhap ct
+left join vat_tu vt on vt.vt_id = ct.vt_id
+left join phieu_nhap pn on pn.pn_id = ct.pn_id
+where ct.sl_nhap > 50;
+
+select * from vw_CTPNHAP_loc;
+
+-- 6. Tạo view có tên vw_CTPNHAP_VT_loc bao gồm các thông tin sau: số phiếu nhập hàng, mã vật tư, tên vật tư, số lượng nhập, 
+-- đơn giá nhập, thành tiền nhập. Và chỉ liệt kê các chi tiết nhập vật tư có đơn vị tính là Bộ.
+create view vw_CTPNHAP_VT_loc as
+select pn.pn_ma, vt.vt_ma, vt.ten , ct.sl_nhap, ct.dg_nhap, (ct.sl_nhap * ct.dg_nhap) as TTN
+from chi_tiet_phieu_nhap ct
+left join vat_tu vt on vt.vt_id = ct.vt_id
+left join phieu_nhap pn on pn.pn_id = ct.pn_id
+where vt.dvt = 'Kg';
+
+select * from vw_CTPNHAP_VT_loc;
+
+-- 7. Tạo view có tên vw_CTPXUAT bao gồm các thông tin sau: số phiếu xuất hàng, mã vật tư, số lượng xuất, đơn giá xuất, thành tiền xuất.
+create view vw_CTPXUAT as
+select px.px_ma, vt.vt_ma, ct.sl_xuat, ct.dg_xuat, (ct.sl_xuat * ct.dg_xuat) as TTX
+from chi_tiet_phieu_xuat ct
+left join vat_tu vt on vt.vt_id = ct.vt_id
+left join phieu_xuat px on px.px_id = ct.px_id;
+
+select * from vw_CTPXUAT;
+
+-- 8. Tạo view có tên vw_CTPXUAT_VT bao gồm các thông tin sau: số phiếu xuất hàng, mã vật tư, tên vật tư, số lượng xuất, đơn giá xuất.
+create view vw_CTPXUAT_VT as
+select px.px_ma, vt.vt_ma, vt.ten, ct.sl_xuat, ct.dg_xuat
+from chi_tiet_phieu_xuat ct
+ join vat_tu vt on vt.vt_id = ct.vt_id
+ join phieu_xuat px on px.px_id = ct.px_id;
+ 
+ -- 9. Tạo view có tên vw_CTPXUAT_VT_PX bao gồm các thông tin sau: số phiếu xuất hàng, tên khách hàng,
+ -- mã vật tư, tên vật tư, số lượng xuất, đơn giá xuất.
+create view vw_CTPXUAT_VT_PX as
+select px.px_ma, px.ten_kh, vt.vt_ma, vt.ten, ct.sl_xuat, ct.dg_xuat
+from chi_tiet_phieu_xuat ct
+join vat_tu vt on vt.vt_id = ct.vt_id
+join phieu_xuat px on px.px_id = ct.px_id;
+
+-- Tạo các stored procedure sau
+-- Câu 1. Tạo Stored procedure (SP) cho biết tổng số lượng cuối của vật tư với mã vật tư là tham số vào.
+
+delimiter //
+create procedure get_sp_tk(in vt_ma varchar(255))
+begin
+select vt.vt_ma, ((tk.sl_dau + tk.sl_nhap) - tk.sl_xuat) as SLC
+from ton_kho tk
+join vat_tu vt on vt.vt_id = tk.vt_id
+where vt.vt_ma = vt_ma;
+end //  
+delimiter ;
+
+call get_sp_tk('VT001');
+
+-- Câu 2. Tạo SP cho biết tổng tiền xuất của vật tư với mã vật tư là tham số vào, out là tổng tiền xuất
+delimiter //
+create procedure get_sp_tk_2(in vt_ma varchar(255), out SLC float)
+begin
+select vt.vt_ma, ((tk.sl_dau + tk.sl_nhap) - tk.sl_xuat) as SLC
+from ton_kho tk
+join vat_tu vt on vt.vt_id = tk.vt_id
+where vt.vt_ma = vt_ma;
+end //  
+delimiter ;
+
+call get_sp_tk_2('VT002', @SLC);
+
+-- Câu 3. Tạo SP cho biết tổng số lượng đặt theo số đơn hàng với số đơn hàng là tham số vào.
+
+DELIMITER //
+create procedure get_tong_sl_dat
+(in ddh_ma varchar(255))
+begin
+select ddh_ma, sum(sl_dat)
+from don_dat_hang ddh 
+join chi_tiet_don_hang ctdh on ctdh.ddh_id = ctdh.ddh_id
+group by ddh.ddh_ma
+having ddh.ddh_ma = ddh_ma;
+end //
+DELIMITER ;
+
+
+
+
