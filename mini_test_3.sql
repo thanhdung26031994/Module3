@@ -242,7 +242,7 @@ join phieu_xuat px on px.px_id = ct.px_id;
 -- Câu 1. Tạo Stored procedure (SP) cho biết tổng số lượng cuối của vật tư với mã vật tư là tham số vào.
 
 delimiter //
-create procedure get_sp_tk(in vt_ma varchar(255))
+create procedure get_tong_sl_cuoi(in vt_ma varchar(255))
 begin
 select vt.vt_ma, ((tk.sl_dau + tk.sl_nhap) - tk.sl_xuat) as SLC
 from ton_kho tk
@@ -251,20 +251,24 @@ where vt.vt_ma = vt_ma;
 end //  
 delimiter ;
 
-call get_sp_tk('VT001');
+call get_tong_sl_cuoi('VT001');
 
 -- Câu 2. Tạo SP cho biết tổng tiền xuất của vật tư với mã vật tư là tham số vào, out là tổng tiền xuất
 delimiter //
-create procedure get_sp_tk_2(in vt_ma varchar(255), out SLC float)
+create procedure get_tong_tien_xuat(in vt_ma varchar(255), out SLC float)
 begin
-select vt.vt_ma, ((tk.sl_dau + tk.sl_nhap) - tk.sl_xuat) as SLC
-from ton_kho tk
-join vat_tu vt on vt.vt_id = tk.vt_id
-where vt.vt_ma = vt_ma;
+select vt.vt_ma, sum(ct.sl_xuat * ct.dg_xuat) as SLC
+from chi_tiet_phieu_xuat ct
+join vat_tu vt on vt.vt_id = ct.vt_id
+group by vt.vt_ma
+having vt.vt_ma = vt_ma;
 end //  
 delimiter ;
 
-call get_sp_tk_2('VT002', @SLC);
+call get_tong_tien_xuat('VT005', @SLC);
+
+insert into chi_tiet_phieu_xuat
+values (8,1, 5, 20,14, 'đang cần');
 
 -- Câu 3. Tạo SP cho biết tổng số lượng đặt theo số đơn hàng với số đơn hàng là tham số vào.
 
@@ -280,6 +284,37 @@ having ddh.ddh_ma = ddh_ma;
 end //
 DELIMITER ;
 
+-- Câu 4. Tạo SP dùng để thêm một đơn đặt hàng.
+DELIMITER //
+create procedure get_them_ddh
+(in t_ddh_ma varchar(255),
+ in t_ngay_dat date,
+ t_ncc_id int)
+begin
+insert into don_dat_hang(ddh_ma, ngay_dat,ncc_id)
+values (t_ddh_ma, t_ngay_dat, t_ncc_id);
+end //
+DELIMITER ;
+
+call get_them_ddh('DDH04', '2024-02-02', 3);
+
+select * from don_dat_hang;
+
+-- Câu 5. Tạo SP dùng để thêm một chi tiết đơn đặt hàng.
+DELIMITER //
+create procedure get_them_ctdh
+(in t_ddh_id int,
+ in t_vt_id int,
+ in t_sl_dat float)
+begin
+insert into chi_tiet_don_hang(ddh_id, vt_id, sl_dat)
+values (t_ddh_id, t_vt_id, t_sl_dat);
+end //
+DELIMITER ;
+
+call get_them_ctdh(3, 2, 11);
+
+select * from chi_tiet_don_hang;
 
 
 
