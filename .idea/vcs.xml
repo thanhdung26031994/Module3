@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/ss06_CSS" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/ss07_layout_rwd" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/ss1_database_overview" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/ss2_design_database" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/ss3_query_database" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/ss4_function" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/ss5_view_index_sp" vcs="Git" />
+  </component>
+</project>

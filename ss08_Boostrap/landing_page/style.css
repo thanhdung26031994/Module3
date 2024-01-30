@@ -1,0 +1,33 @@
+.container-fluid{
+    padding: 0 5%;
+    font-size: 13px !important;
+    height: 25px;
+    margin-bottom: 2px;
+}
+.navbar-brand img{
+    margin-top: -3px;
+    max-width: none;
+    width: 108px;
+}
+.border-bottom{
+    border-left: 1.5px solid #000;
+    height: 24px;
+    content: "";
+    margin-left: 7px;
+    top: 15px;
+    left: 0
+}
+
+#surface{
+    display: block;
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: -3px;
+}
+
+.dropdown-menu{
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: -5px;
+}
+
